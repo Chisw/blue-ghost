@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Blue Ghost Popup</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="../css/tailwind.min.css" />
+    <link rel="stylesheet" type="text/css" href="../css/element.min.css" />
+  </head>
+  <body>
+    <div id="blue-ghost-popup" style="width:480px;">
+      <el-tabs type="border-card">
+
+        <el-tab-pane>
+          <span slot="label"><i class="el-icon-monitor"></i> Site</span>
+          <div class="flex items-center">
+            <img class="w-5 h-5" :src="site.favIconUrl || '../img/icon.svg'" />
+            <el-input size="mini" class="flex-grow ml-2" v-model="site.title" placeholder="Site title" />
+          </div>
+          <p class="mt-2 text-xs text-gray-500 truncate">{{site.url}}</p>
+          <div class="mt-2 flex items-center">
+            <div class="flex-grow mr-4">
+              <el-alert v-if="site.url.length > 512" :closable="false" title="URL is too long" type="error"></el-alert>
+            </div>
+            <el-button round size="mini" type="primary" icon="el-icon-upload" @click="pickSite()" :disabled="pickSiteDisabled">
+              Pick
+            </el-button>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane>
+          <span slot="label"><i class="el-icon-setting"></i> Config</span>
+          <div>
+            <el-input size="mini" v-model="config.api" placeholder="API url">
+              <template slot="prepend">API</template>
+            </el-input>
+            <el-input size="mini" v-model="config.token" placeholder="Token code" type="password" class="mt-2">
+              <template slot="prepend">Token</template>
+            </el-input>
+            <el-input size="mini" v-model="config.newTab" placeholder="New tab url" class="mt-2">
+              <template slot="prepend">NewTab</template>
+            </el-input>
+            <div class="mt-2 flex justify-end">
+              <el-button round size="mini" type="primary" icon="el-icon-refresh" @click="updateConfig()" :disabled="updateConfigDisabled">
+                Update
+              </el-button>
+            </div>
+          </div>
+        </el-tab-pane>
+
+      </el-tabs>
+    </div>
+  </body>
+  <script src="../js/lib/luxon.min.js"></script>
+  <script src="../js/lib/vue.min.js"></script>
+  <script src="../js/lib/element.min.js"></script>
+  <script src="../js/popup.js"></script>
+</html>
