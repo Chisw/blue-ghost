@@ -25,6 +25,19 @@
       ],
       "css": [],
       "run_at": "document_start"
+    },
+    {
+      "matches": ["https://*.12306.cn/*"],
+      "js": [
+        "js/lib/vue.min.js",
+        "js/lib/element.min.js",
+        "js/12306.js"
+      ],
+      "css": [
+        "css/element.min.css",
+        "css/12306.css"
+      ],
+      "run_at": "document_end"
     }
   ],
   "permissions": [

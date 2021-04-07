@@ -1,0 +1,14 @@
+#blue-ghost-12306 {
+  position: absolute;
+  z-index: 99999;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, .4);
+}
+
+#blue-ghost-12306 .panel {
+  padding: 20px;
+  background: #fff;
+}
