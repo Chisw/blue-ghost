@@ -1,14 +1,21 @@
-#blue-ghost-12306 {
-  position: absolute;
-  z-index: 99999;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: rgba(0, 0, 0, .4);
+#audiojs_wrapper1 {
+  display: none;
 }
 
-#blue-ghost-12306 .panel {
+#blue-ghost-12306 {
   padding: 20px;
-  background: #fff;
+  border-bottom: 1px solid #efefef;
+  background-color: #fafafa;
+}
+
+#blue-ghost-12306 .list-list {
+  display: flex;
+}
+
+#blue-ghost-12306 .list {
+  margin-right: 20px;
+}
+
+#blue-ghost-12306 .shift {
+  margin-bottom: 8px;
 }

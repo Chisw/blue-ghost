@@ -27,10 +27,11 @@
       "run_at": "document_start"
     },
     {
-      "matches": ["https://*.12306.cn/*"],
+      "matches": ["https://kyfw.12306.cn/*"],
       "js": [
         "js/lib/vue.min.js",
         "js/lib/element.min.js",
+        "js/lib/luxon.min.js",
         "js/12306.js"
       ],
       "css": [
