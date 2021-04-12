@@ -1,3 +1,36 @@
+/*
+
+  shift {
+    trainNo,
+    date,
+    from,
+    to,
+    lishi,
+    price,
+    ticketCount,
+  }
+
+  route {
+    createdAt,
+    from,
+    to,
+    date,
+    shiftList,
+    filter {
+      trainType,
+      from,
+      to,
+      start,
+      end,
+    },
+  }
+
+  plan [{
+    date,
+    trainNo,
+  }]
+
+ */
 ; (function () {
 
   window.addEventListener('load', () => {
@@ -32,9 +65,10 @@
 
         <el-button :loading="loading" @click="getShifts()" type="primary">搜索</el-button>
 
-        <div class="list-list">
-          <div v-for="(list, index) in listList" :key="index" class="list">
-            <div v-for="shift in list" :key="shift.code" class="shift">
+        <div class="route-list">
+          <div v-for="(route, index) in routeList" :key="index" class="route">
+            <div @click="removeRoute(index)">移除</div>
+            <div v-for="shift in route.shiftList" :key="shift.code" class="shift">
               <div>
                 <b>{{shift.station_train_code}}</b>
                 {{shift.start_time}} ({{shift.lishi}}) {{shift.arrive_time}} 
@@ -59,7 +93,7 @@
           date: '2021-04-15',
         },
         loading: false,
-        listList: [],
+        routeList: [],
         stationList: [],
       },
 
@@ -133,7 +167,20 @@
               })
               return shiftList
             })
-            this.listList.push(data)
+            this.routeList.push({
+              createdAt: Date.now(),
+              from: this.form.from,
+              to: this.form.to,
+              date: this.form.date,
+              shiftList: data,
+              filter: {
+                trainType: ['G', 'D', 'T', 'K', 'Z'],
+                from: [],
+                to: [],
+                start: '00:00',
+                end: '23:59',
+              },
+            })
             this.loading = false
           return data
         },
@@ -162,6 +209,12 @@
         searchStation(key) {
           if (!key) return []
           return this.list.filter(s => [s.name, s.pyAbbr, s.pyFull].some(v => v.includes(key)))
+        },
+
+        removeRoute(index) {
+          const _list = Array.from(this.routeList)
+          _list.splice(index, 1)
+          this.routeList = _list
         },
 
       },
