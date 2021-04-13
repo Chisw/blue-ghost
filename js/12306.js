@@ -1,15 +1,4 @@
 /*
-
-  shift {
-    trainNo,
-    date,
-    from,
-    to,
-    lishi,
-    price,
-    ticketCount,
-  }
-
   route {
     createdAt,
     from,
@@ -17,17 +6,17 @@
     date,
     shiftList,
     filter {
-      trainType,
+      trainTypes,
       from,
       to,
-      start,
-      end,
+      startTime,
+      endTime,
     },
   }
 
   plan [{
     date,
-    trainNo,
+    trainCode,
   }]
 
  */
@@ -67,14 +56,34 @@
 
         <div class="route-list">
           <div v-for="(route, index) in routeList" :key="index" class="route">
-            <div @click="removeRoute(index)">移除</div>
-            <div v-for="shift in route.shiftList" :key="shift.code" class="shift">
+            <div>
+              <span>{{stationMap[route.from]}}</span>
+              <span>{{stationMap[route.to]}}</span>
+              <span>{{route.date}}</span>
+              <span @click="removeRoute(index)">移除</span>
+            </div>
+            <div>
+              <el-checkbox-group v-model="route.filter.trainTypes">
+                <el-checkbox
+                  v-for="type in trainTypes"
+                  :label="type"
+                  :key="type"
+                >
+                  {{type}}
+                </el-checkbox>
+              </el-checkbox-group>
+            </div>
+            <div
+              v-for="shift in route.shiftList.filter(s => route.filter.trainTypes.includes(s.trainCode[0]))"
+              :key="shift.code"
+              class="shift"
+            >
               <div>
-                <b>{{shift.station_train_code}}</b>
-                {{shift.start_time}} ({{shift.lishi}}) {{shift.arrive_time}} 
+                <b>{{shift.trainCode}}</b>
+                {{shift.startTime}} ({{shift.duration}}) {{shift.arriveTime}} 
               </div>
               <div>
-                {{stationMap[shift.from_station_telecode]}} > {{stationMap[shift.to_station_telecode]}}
+                {{stationMap[shift.fromStationCode]}} > {{stationMap[shift.toStationCode]}}
               </div>
             </div>
           </div>
@@ -87,6 +96,7 @@
       el: '#blue-ghost-12306',
 
       data: {
+        trainTypes: ['G', 'C', 'D', 'T', 'K', 'Z'],
         form: {
           from: 'GAU',
           to: 'SZH',
@@ -129,42 +139,7 @@
           )
             .then(res => res.json())
             .then(data => {
-              const { result } = data.data
-              const shiftList = result.map(str => {
-                const keyStrList = decodeURIComponent(str).split('\n')
-                const shiftStrList = keyStrList[keyStrList.length - 1].split('|')
-
-                const [
-                  ,
-                  ,
-                  ,
-                  station_train_code,
-                  start_station_telecode,
-                  end_station_telecode,
-                  from_station_telecode,
-                  to_station_telecode,
-                  start_time,
-                  arrive_time,
-                  lishi,
-                  ,
-                  ,
-                  date,
-                ] = shiftStrList
-
-                const shift = {
-                  station_train_code,
-                  start_station_telecode,
-                  end_station_telecode,
-                  from_station_telecode,
-                  to_station_telecode,
-                  start_time,
-                  arrive_time,
-                  lishi,
-                  date,
-                }
-
-                return shift
-              })
+              const shiftList = data?.data?.result?.map(strToShift) || []
               return shiftList
             })
             this.routeList.push({
@@ -174,11 +149,11 @@
               date: this.form.date,
               shiftList: data,
               filter: {
-                trainType: ['G', 'D', 'T', 'K', 'Z'],
+                trainTypes: Array.from(this.trainTypes),
                 from: [],
                 to: [],
-                start: '00:00',
-                end: '23:59',
+                startTime: '00:00',
+                endTime: '23:59',
               },
             })
             this.loading = false
@@ -224,3 +199,39 @@
   })
 
 }());
+
+
+function strToShift (str) {
+  const keyStrList = decodeURIComponent(str).split('\n')
+  const shiftStrList = keyStrList[keyStrList.length - 1].split('|')
+
+  const [
+    ,
+    ,
+    ,
+    trainCode,
+    startStationCode,
+    endStationCode,
+    fromStationCode,
+    toStationCode,
+    startTime,
+    arriveTime,
+    duration,
+    ,
+    ,
+    date,
+  ] = shiftStrList
+
+  const shift = {
+    trainCode,
+    startStationCode,
+    endStationCode,
+    fromStationCode,
+    toStationCode,
+    startTime,
+    arriveTime,
+    duration,
+    date,
+  }
+  return shift
+}

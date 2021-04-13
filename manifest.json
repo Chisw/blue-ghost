@@ -32,6 +32,7 @@
         "js/lib/vue.min.js",
         "js/lib/element.min.js",
         "js/lib/luxon.min.js",
+        "js/lib/lodash.min.js",
         "js/12306.js"
       ],
       "css": [
