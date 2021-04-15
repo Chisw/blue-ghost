@@ -45,15 +45,23 @@
         搜索
       </el-button>
 
+      <el-button
+        type="primary"
+        :disabled="!isAllShiftsSelected"
+      >
+        确认行程
+      </el-button>
+
       <div class="route-list">
         <div v-for="(route, routeIndex) in routeList" :key="routeIndex" class="route">
           <div>
             <span>{{stationMap[route.from]}}</span>
             <span>{{stationMap[route.to]}}</span>
-            <span>{{route.date}}</span>
+            <span>{{formatDate(route.date)}}</span>
             <span @click="removeRoute(routeIndex)">移除</span>
           </div>
           <div>
+            <span>车次类型：</span>
             <el-checkbox-group v-model="route.filter.selectedTrainTypes">
               <el-checkbox
                 v-for="type in route.filter.trainTypes"
@@ -65,6 +73,7 @@
             </el-checkbox-group>
           </div>
           <div>
+            <span>出发车站：</span>
             <el-checkbox-group v-model="route.filter.selectedFromStationCodes">
               <el-checkbox
                 v-for="code in route.filter.fromStationCodes"
@@ -76,6 +85,7 @@
             </el-checkbox-group>
           </div>
           <div>
+            <span>到达车站：</span>
             <el-checkbox-group v-model="route.filter.selectedToStationCodes">
               <el-checkbox
                 v-for="code in route.filter.toStationCodes"
@@ -86,7 +96,8 @@
               </el-checkbox>
             </el-checkbox-group>
           </div>
-          <div>
+          <div class="small-time-select">
+            <span>发车时间：</span>
             <el-time-select
               placeholder="起始时间"
               v-model="route.filter.rangeStart"
@@ -110,9 +121,9 @@
             v-for="(shift, shiftIndex) in route.shiftList.filter(shift => shiftFilter(shift, route.filter))"
             :key="shiftIndex"
             class="shift"
-            :class="shift.trainCode === route.selectedShift?.trainCode ? 'active' : ''"
+            :class="isShiftSelected(shift, route.selectedShift) ? 'active' : ''"
             :disabled="isShiftDisabled(shift, routeIndex)"
-            @click="setSelectedRouteShift(routeIndex, shift)"
+            @click="!isShiftDisabled(shift, routeIndex) && setSelectedRouteShift(routeIndex, shift)"
           >
             <div>
               <b>{{shift.trainCode}}</b>
@@ -120,6 +131,9 @@
             </div>
             <div>
               {{stationMap[shift.fromStationCode]}} > {{stationMap[shift.toStationCode]}}
+            </div>
+            <div>
+              {{getTimeDiffPrev(routeIndex, shift)}}
             </div>
           </div>
         </div>
@@ -130,7 +144,7 @@
   window.addEventListener('load', () => {
 
     const { DateTime } = luxon
-    const { uniq } = _
+    const { uniq, pick, isEqual } = _
 
     const container = document.createElement('div')
     container.setAttribute('id', 'blue-ghost-12306')
@@ -144,7 +158,7 @@
         form: {
           from: 'GAU',
           to: 'SZH',
-          date: '2021-04-15',
+          date: new Date(),
         },
         loadingRoute: false,
         loadingStations: false,
@@ -166,17 +180,21 @@
           this.stationList.forEach(s => map[s.code] = s.name)
           return map
         },
+
+        isAllShiftsSelected() {
+          return this.routeList.length && this.routeList.every(r => !!r.selectedShift)
+        },
       },
 
       methods: {
+        formatDate(date) {
+          return DateTime.fromJSDate(date).toFormat('yyyy-MM-dd')
+        },
+
         async addRoute () {
           this.loadingRoute = true
-          const train_date = typeof this.form.date === 'string'
-            ? this.form.date
-            : DateTime.fromJSDate(this.form.date).toFormat('yyyy-MM-dd')
-
           const shiftList = await fetch('https://kyfw.12306.cn/otn/leftTicket/query'
-            + `?leftTicketDTO.train_date=${train_date}`
+            + `?leftTicketDTO.train_date=${this.formatDate(this.form.date)}`
             + `&leftTicketDTO.from_station=${this.form.from}`
             + `&leftTicketDTO.to_station=${this.form.to}`
             + `&purpose_codes=ADULT`
@@ -218,7 +236,8 @@
 
         async initStations() {
           this.loadingStations = true
-          const station_names_str = await fetch('https://kyfw.12306.cn/otn/resources/js/framework/station_name.js?station_version=1.9186')
+          const url = Array.from(document.scripts).find(s => s.src.includes('station_name'))?.src
+          const station_names_str = await fetch(url)
             .then(res => res.text())
             .then(data => data)
 
@@ -244,8 +263,37 @@
           return this.list.filter(s => [s.name, s.pyAbbr, s.pyFull].some(v => v.includes(key)))
         },
 
+        getTimeDiffPrev(routeIndex, shift) {
+          const prevRouteSelectedShift = this.routeList[routeIndex - 1]?.selectedShift
+          if (routeIndex && prevRouteSelectedShift) {
+            const currTime = DateTime.fromFormat(shift.startTime, 'HH:mm')
+            const prevTime = DateTime.fromFormat(prevRouteSelectedShift.arriveTime, 'HH:mm')
+            const {
+              months,
+              days,
+              hours,
+              minutes,
+            } = currTime.diff(prevTime).shiftTo('months', 'days', 'hours', 'minutes', 'seconds').toObject()
+
+            const res = [
+              { unit: '个月', count: months },
+              { unit: '天', count: days },
+              { unit: '小时', count: hours },
+              { unit: '分钟', count: minutes },
+            ].map(({ unit, count }) => count ? `${count} ${unit}` : '').join(' ')
+
+            return `间隔 ${res}`
+          }
+        },
+
         setSelectedRouteShift(routeIndex, shift) {
-          this.routeList[routeIndex].selectedShift = shift
+          this.routeList.forEach((route, index) => {
+            if (index > routeIndex) {
+              route.selectedShift = null
+            } else if (index === routeIndex) {
+              route.selectedShift = shift
+            }
+          })
         },
 
         isShiftDisabled(shift, routeIndex) {
@@ -257,6 +305,11 @@
           } else {
             return shift.startTime <= prevRouteSelectedShift.startTime
           }
+        },
+
+        isShiftSelected(shift, selectedShift) {
+          const keys = ['trainCode', 'startTime', 'arriveTime']
+          return isEqual(pick(shift, keys), pick(selectedShift, keys))
         },
 
       },
@@ -309,7 +362,6 @@ function shiftFilter (shift, routerFilter) {
     fromStationCode,
     toStationCode,
     startTime,
-    arriveTime,
   } = shift
 
   const {

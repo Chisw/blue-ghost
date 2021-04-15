@@ -2,6 +2,15 @@
   display: none;
 }
 
+.small-time-select .el-date-editor {
+  width: 64px;
+}
+
+.small-time-select .el-date-editor input {
+  height: 24px;
+  padding: 8px;
+}
+
 #blue-ghost-12306 {
   border-bottom: 1px solid #efefef;
   background-color: #fafafa;
@@ -30,9 +39,10 @@
 }
 
 #blue-ghost-12306 .shift.active {
-  color: #00f;
+  color: #fff;
+  background-color: #4093ff;
 }
 
 #blue-ghost-12306 .shift[disabled] {
-  color: #999;
+  color: #aaa;
 }
