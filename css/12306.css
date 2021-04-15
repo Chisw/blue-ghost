@@ -3,9 +3,12 @@
 }
 
 #blue-ghost-12306 {
-  padding: 20px;
   border-bottom: 1px solid #efefef;
   background-color: #fafafa;
+}
+
+#blue-ghost-12306 .container {
+  padding: 20px;
 }
 
 #blue-ghost-12306 .route-list {
@@ -17,5 +20,19 @@
 }
 
 #blue-ghost-12306 .shift {
-  margin-bottom: 8px;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#blue-ghost-12306 .shift:hover {
+  background: #fff;
+}
+
+#blue-ghost-12306 .shift.active {
+  color: #00f;
+}
+
+#blue-ghost-12306 .shift[disabled] {
+  color: #999;
 }

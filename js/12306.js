@@ -1,19 +1,4 @@
 /*
-  route {
-    createdAt,
-    from,
-    to,
-    date,
-    shiftList,
-    filter {
-      trainTypes,
-      from,
-      to,
-      startTime,
-      endTime,
-    },
-  }
-
   plan [{
     date,
     trainCode,
@@ -23,7 +8,11 @@
 ; (function () {
 
   const HTML = `
-    <div>
+    <div
+      class="container"
+      v-loading="loadingStations"
+      element-loading-text="站点名称加载中.."
+    >
       <el-select v-model="form.from" filterable placeholder="请选择">
         <el-option
           v-for="item in stationList"
@@ -48,15 +37,21 @@
         placeholder="选择日期">
       </el-date-picker>
 
-      <el-button :loading="loadingRoute" @click="addRoute()" type="primary">搜索</el-button>
+      <el-button
+        :loading="loadingRoute"
+        @click="addRoute()"
+        type="primary"
+      >
+        搜索
+      </el-button>
 
       <div class="route-list">
-        <div v-for="(route, index) in routeList" :key="index" class="route">
+        <div v-for="(route, routeIndex) in routeList" :key="routeIndex" class="route">
           <div>
             <span>{{stationMap[route.from]}}</span>
             <span>{{stationMap[route.to]}}</span>
             <span>{{route.date}}</span>
-            <span @click="removeRoute(index)">移除</span>
+            <span @click="removeRoute(routeIndex)">移除</span>
           </div>
           <div>
             <el-checkbox-group v-model="route.filter.selectedTrainTypes">
@@ -112,9 +107,12 @@
             </el-time-select>
           </div>
           <div
-            v-for="shift in route.shiftList.filter(shift => shiftFilter(shift, route.filter))"
-            :key="shift.code"
+            v-for="(shift, shiftIndex) in route.shiftList.filter(shift => shiftFilter(shift, route.filter))"
+            :key="shiftIndex"
             class="shift"
+            :class="shift.trainCode === route.selectedShift?.trainCode ? 'active' : ''"
+            :disabled="isShiftDisabled(shift, routeIndex)"
+            @click="setSelectedRouteShift(routeIndex, shift)"
           >
             <div>
               <b>{{shift.trainCode}}</b>
@@ -149,6 +147,7 @@
           date: '2021-04-15',
         },
         loadingRoute: false,
+        loadingStations: false,
         routeList: [],
         stationList: [],
       },
@@ -206,6 +205,7 @@
               rangeStart: '00:00',
               rangeEnd: '24:00',
             },
+            selectedShift: null,
           })
           this.loadingRoute = false
         },
@@ -217,6 +217,7 @@
         },
 
         async initStations() {
+          this.loadingStations = true
           const station_names_str = await fetch('https://kyfw.12306.cn/otn/resources/js/framework/station_name.js?station_version=1.9186')
             .then(res => res.text())
             .then(data => data)
@@ -235,11 +236,27 @@
                 pyFull,
               }
             })
+          this.loadingStations = false
         },
 
         searchStation(key) {
           if (!key) return []
           return this.list.filter(s => [s.name, s.pyAbbr, s.pyFull].some(v => v.includes(key)))
+        },
+
+        setSelectedRouteShift(routeIndex, shift) {
+          this.routeList[routeIndex].selectedShift = shift
+        },
+
+        isShiftDisabled(shift, routeIndex) {
+          const isFirstRoute = routeIndex === 0
+          const prevRouteSelectedShift = this.routeList[routeIndex - 1]?.selectedShift
+          const isPrevRouteNoSelected = !prevRouteSelectedShift
+          if (isFirstRoute || isPrevRouteNoSelected) {
+            return false
+          } else {
+            return shift.startTime <= prevRouteSelectedShift.startTime
+          }
         },
 
       },
