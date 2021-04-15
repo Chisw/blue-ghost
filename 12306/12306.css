@@ -12,8 +12,8 @@
 }
 
 #blue-ghost-12306 {
-  border-bottom: 1px solid #efefef;
-  background-color: #fafafa;
+  border-bottom: 1px solid #ddd;
+  background-color: #eee;
 }
 
 #blue-ghost-12306 .container {
@@ -45,4 +45,8 @@
 
 #blue-ghost-12306 .shift[disabled] {
   color: #aaa;
+}
+
+.interval {
+  font-weight: bold;
 }
