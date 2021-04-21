@@ -128,18 +128,16 @@
             const currTime = DateTime.fromFormat(shift.startTime, 'HH:mm')
             const prevTime = DateTime.fromFormat(prevRouteSelectedShift.arriveTime, 'HH:mm')
             const {
-              months,
               days,
               hours,
               minutes,
-            } = currTime.diff(prevTime).shiftTo('months', 'days', 'hours', 'minutes', 'seconds').toObject()
+            } = currTime.diff(prevTime).shiftTo('days', 'hours', 'minutes', 'seconds').toObject()
 
             const res = [
-              { unit: '个月', count: months },
-              { unit: '天', count: days },
-              { unit: '小时', count: hours },
-              { unit: '分钟', count: minutes },
-            ].map(({ unit, count }) => count ? `${count} ${unit}` : '').join(' ')
+              { unit: 'd', count: days },
+              { unit: 'h', count: hours },
+              { unit: 'min', count: minutes },
+            ].map(({ unit, count }) => count ? `${count}${unit}` : '').join(' ')
 
             return `间隔 ${res}`
           }
@@ -162,7 +160,7 @@
           if (isFirstRoute || isPrevRouteNoSelected) {
             return false
           } else {
-            return shift.startTime <= prevRouteSelectedShift.startTime
+            return shift.startTime <= prevRouteSelectedShift.arriveTime
           }
         },
 
