@@ -1,7 +1,7 @@
 ## Blue Ghost
 
-![](./-static/img/icon.svg)
+![](./static/img/icon.svg)
 
-### 重新定义 12306
+### 我的 12306
 
-换乘计算
+换乘排班

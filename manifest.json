@@ -4,16 +4,16 @@
   "version": "1.0.0",
   "description": "A chrome assistant",
   "icons": {
-    "16": "-static/img/icon.png",
-    "48": "-static/img/icon.png",
-    "128": "-static/img/icon.png"
+    "16": "static/img/icon.png",
+    "48": "static/img/icon.png",
+    "128": "static/img/icon.png"
   },
   "background": {
     "scripts": ["background/index.js"],
     "persistent": true
   },
   "browser_action": {
-    "defalut_icon": "-static/img/icon.png",
+    "defalut_icon": "static/img/icon.png",
     "default_title": "Blue Ghost",
     "default_popup": "popup/index.html"
   },
@@ -29,16 +29,16 @@
     {
       "matches": ["https://kyfw.12306.cn/*"],
       "js": [
-        "-static/js/vue.min.js",
-        "-static/js/element.min.js",
-        "-static/js/luxon.min.js",
-        "-static/js/lodash.min.js",
-        "12306/dom.js.html",
-        "12306/index.js"
+        "static/js/vue.min.js",
+        "static/js/element.min.js",
+        "static/js/luxon.min.js",
+        "static/js/lodash.min.js",
+        "my12306/dom.js.html",
+        "my12306/index.js"
       ],
       "css": [
-        "-static/css/element.min.css",
-        "12306/12306.css"
+        "static/css/element.min.css",
+        "my12306/style.css"
       ],
       "run_at": "document_end"
     }
