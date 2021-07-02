@@ -1,3 +1,5 @@
 ; (function () {
+  window.addEventListener('load', () => {
 
+  })
 }());

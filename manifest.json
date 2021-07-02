@@ -21,9 +21,11 @@
     {
       "matches": ["<all_urls>"],
       "js": [
+        "static/js/FileSaver.js",
+        "static/js/JSZip.js",
+        "content-script/downloadFiles.js",
         "content-script/index.js"
       ],
-      "css": [],
       "run_at": "document_start"
     },
     {
@@ -41,6 +43,11 @@
         "my12306/style.css"
       ],
       "run_at": "document_end"
+    },
+    {
+      "matches": ["http://epaper.gytoday.cn/*"],
+      "js": ["content-script/gyrb.js"],
+      "run_at": "document_start"
     }
   ],
   "permissions": [
