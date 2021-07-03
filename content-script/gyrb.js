@@ -35,28 +35,30 @@
           const relativeHref = href.split('resfile').reverse()[0]
           const absoluteHref = `http://epaper.gytoday.cn/resfile${relativeHref}`
           if (!list.includes(absoluteHref)) {
-            log(`#${linkIndex} Collecting ${absoluteHref}`)
+            log(`#${linkIndex} Collecting ${absoluteHref}.`)
             list.push(absoluteHref)
           }
         } else {
-          log(`#${linkIndex} No 'resfile' contained`)
+          log(`#${linkIndex} No 'resfile' contained.`)
         }
       })
 
       store.setItem(KEYMAP.pdfList, JSON.stringify(list))
     }
 
-    const startDownload = () => {
+    const startDownload = async () => {
       const list = getStorePDFList()
 
       if (list.length) {
-        downloadFiles(list)
-        // if (confirm('Clear store PDF list?')) {
-        //   clearStorePDFList()
-        //   log('PDF list is cleared')
-        // }
+        await downloadFiles(list)
+        setTimeout(() => {
+          if (confirm('Clear store PDF list?')) {
+            clearStorePDFList()
+            log('PDF list is cleared.')
+          }
+        }, 20)
       } else {
-        log('Can not download empty PDF list')
+        log('Can not download empty PDF list.')
       }
     }
 
@@ -76,17 +78,17 @@
       if (restAutoCheckTimesItem) {
         const restAutoCheckTimes = +restAutoCheckTimesItem
         if (restAutoCheckTimes > 0) {
-          log(`Rest auto check times: ${restAutoCheckTimes}`)
+          log(`Rest auto check times: ${restAutoCheckTimes}.`)
           store.setItem(KEYMAP.restTimes, restAutoCheckTimes - 1)
           collectPagePDFList()
           setTimeout(goNextPage, 200)
         } else {
           store.removeItem(KEYMAP.restTimes)
-          log('Start downlaod')
+          log('Start to download.')
           startDownload()
         }
       } else {
-        log('Start with gyrb.run()')
+        log('Start with gyrb.run() in scope of BlueGhost.')
       }
     }
 

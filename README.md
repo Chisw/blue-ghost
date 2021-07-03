@@ -1,6 +1,6 @@
-## Blue Ghost
-
 ![BlueGhost](./static/img/icon.svg)
+
+## Blue Ghost
 
 ### 保存书签到个人服务器
 

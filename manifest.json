@@ -47,7 +47,7 @@
     {
       "matches": ["http://epaper.gytoday.cn/*"],
       "js": ["content-script/gyrb.js"],
-      "run_at": "document_start"
+      "run_at": "document_end"
     }
   ],
   "permissions": [
