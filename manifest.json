@@ -45,8 +45,21 @@
       "run_at": "document_end"
     },
     {
-      "matches": ["http://epaper.gytoday.cn/*"],
-      "js": ["content-script/gyrb.js"],
+      "matches": [
+        "http://epaper.gytoday.cn/*"
+      ],
+      "js": [
+        "content-script/gyrb.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://twitter.com/*"
+      ],
+      "js": [
+        "content-script/tt.js"
+      ],
       "run_at": "document_end"
     }
   ],
