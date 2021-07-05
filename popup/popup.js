@@ -5,18 +5,22 @@
     new Vue({
       el: '#blue-ghost-popup',
     
-      data: {
-        site: {
-          favIconUrl: '',
-          title: '',
-          url: '',
-        },
-        configKey: 'BLUE_GHOST_CONFIG',
-        config: {
-          api: '',
-          token: '',
-          newTab: '',
-        },
+      data() {
+        return {
+          bookmarks: [],
+          bookmarkValue: '',
+          site: {
+            favIconUrl: '',
+            title: '',
+            url: '',
+          },
+          configKey: 'BLUE_GHOST_CONFIG',
+          config: {
+            api: '',
+            token: '',
+            newTab: '',
+          },
+        }
       },
 
       created() {
@@ -25,7 +29,7 @@
       },
 
       mounted() {
-        this.listenEvent()
+        this.init()
       },
 
       computed: {
@@ -35,15 +39,61 @@
             || !this.config.api
             || !this.config.token
         },
+
         updateConfigDisabled() {
           return JSON.stringify(this.config) === localStorage.getItem(this.configKey)
+        },
+
+        displayBookmarks() {
+          const val = this.bookmarkValue.toLowerCase()
+          return this.bookmarks
+            .filter(b => b.titleL.includes(val) || b.titlePY.includes(val) || b.titlePYF.includes(val))
+            .filter((b, i) => i < 20)
         },
       },
 
       methods: {
 
-        reload() {
+        reloadBlueGhost() {
           chrome.runtime.reload()
+        },
+
+        init() {
+          setTimeout(() => {
+            chrome.bookmarks.getTree(treeNodes => {
+              const flatNodes = this.flatBookmarkTreeNodes(treeNodes)
+              this.bookmarks = flatNodes.map(({ title, url }) => {
+                return {
+                  url,
+                  title,
+                  titleL: title.toLowerCase(),
+                  titlePY: getStringPinyin(title),
+                  titlePYF: getStringPinyin(title, true),
+                }
+              })
+            })
+          }, 20)
+
+          document.addEventListener('keyup', e => {
+            if (e.key === 'Enter') {
+              this.pickSite()
+            }
+          })
+        },
+
+        flatBookmarkTreeNodes(treeNodes) {
+          const flatNodes = []
+          const flatChildren = children => {
+            children.forEach(child => {
+              if (child.children) {
+                flatChildren(child.children)
+              } else {
+                flatNodes.push(child)
+              }
+            })
+          }
+          flatChildren(treeNodes)
+          return flatNodes
         },
 
         getSiteData() {
@@ -62,14 +112,6 @@
 
         updateConfig() {
           localStorage.setItem(this.configKey, JSON.stringify(this.config))
-        },
-
-        listenEvent() {
-          document.addEventListener('keyup', e => {
-            if (e.key === 'Enter') {
-              this.pickSite()
-            }
-          })
         },
 
         async pickSite () {

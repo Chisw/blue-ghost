@@ -11,10 +11,36 @@
       <el-tabs type="border-card">
 
         <el-tab-pane>
+          <span slot="label"><i class="el-icon-star-off"></i> Bookmarks</span>
+          <div>
+            <el-input
+              autofocus
+              size="small"
+              placeholder="请输入站点名称、拼音、拼音首字母"
+              v-model="bookmarkValue"
+            >
+             <el-button slot="prepend" icon="el-icon-search"></el-button>
+            </el-input>
+            <div class="pt-2">
+              <a
+                class="block -mx-4 px-4 py-1 hover:text-blue-600"
+                v-for="(bookmark, index) in displayBookmarks"
+                :key="index"
+                :href="bookmark.url"
+                target="_blank"
+              >
+                <span class="font-semibold">{{index + 1}}. {{bookmark.title}}</span>
+                <p class="text-gray-500">{{bookmark.url}}</p>
+              </a>
+            </div>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane>
           <span slot="label"><i class="el-icon-monitor"></i> Site</span>
           <div class="flex items-center">
             <img class="w-5 h-5" :src="site.favIconUrl || '../img/icon.svg'" />
-            <el-input size="mini" class="flex-grow ml-2" v-model="site.title" placeholder="Site title" />
+            <el-input size="small" class="flex-grow ml-2" v-model="site.title" placeholder="Site title" />
           </div>
           <p class="mt-2 text-xs text-gray-500 truncate">{{site.url}}</p>
           <div class="mt-2 flex items-center">
@@ -30,13 +56,13 @@
         <el-tab-pane>
           <span slot="label"><i class="el-icon-setting"></i> Config</span>
           <div>
-            <el-input size="mini" v-model="config.api" placeholder="API url">
+            <el-input size="small" v-model="config.api" placeholder="API url">
               <template slot="prepend">API</template>
             </el-input>
-            <el-input size="mini" v-model="config.token" placeholder="Token code" type="password" class="mt-2">
+            <el-input size="small" v-model="config.token" placeholder="Token code" type="password" class="mt-2">
               <template slot="prepend">Token</template>
             </el-input>
-            <el-input size="mini" v-model="config.newTab" placeholder="New tab url" class="mt-2">
+            <el-input size="small" v-model="config.newTab" placeholder="New tab url" class="mt-2">
               <template slot="prepend">NewTab</template>
             </el-input>
             <div class="mt-2 flex justify-end">
@@ -55,7 +81,7 @@
             circle
             size="mini"
             icon="el-icon-refresh-left"
-            @click="reload"
+            @click="reloadBlueGhost"
           >
           </el-button>
         </el-tooltip>
@@ -66,5 +92,6 @@
   <script src="../static/js/luxon.min.js"></script>
   <script src="../static/js/vue.min.js"></script>
   <script src="../static/js/element.min.js"></script>
+  <script src="../static/js/pinyin.js"></script>
   <script src="./popup.js"></script>
 </html>

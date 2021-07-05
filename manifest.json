@@ -73,12 +73,13 @@
     }
   ],
   "permissions": [
-    "contextMenus",
     "tabs",
+    "bookmarks",
+    "contextMenus",
     "notifications",
+    "storage",
     "webRequest",
     "webRequestBlocking",
-    "storage",
     "http://*/*",
     "https://*/*"
   ],
@@ -90,6 +91,6 @@
   "omnibox": {
     "keyword": "blue ghost"
   },
-  "content_security_policy": "style-src 'self' 'unsafe-inline';script-src 'self' 'unsafe-eval'; object-src 'self' ;",
+  "content_security_policy": "style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-eval'; object-src 'self';",
   "default_locale": "zh_CN"
 }
