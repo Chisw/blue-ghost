@@ -61,6 +61,15 @@
         "content-script/tt.js"
       ],
       "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://map.baidu.com/*"
+      ],
+      "js": [
+        "content-script/panoda.js"
+      ],
+      "run_at": "document_start"
     }
   ],
   "permissions": [
