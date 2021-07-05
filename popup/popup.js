@@ -42,6 +42,10 @@
 
       methods: {
 
+        reload() {
+          chrome.runtime.reload()
+        },
+
         getSiteData() {
           chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
             const { favIconUrl, title, url } = tabs[0]

@@ -48,6 +48,19 @@
         </el-tab-pane>
 
       </el-tabs>
+
+      <div class="absolute top-0 right-0 p-2">
+        <el-tooltip effect="dark" content="Reload Blue Ghost" placement="bottom">
+          <el-button
+            circle
+            size="mini"
+            icon="el-icon-refresh-left"
+            @click="reload"
+          >
+          </el-button>
+        </el-tooltip>
+      </div>
+
     </div>
   </body>
   <script src="../static/js/luxon.min.js"></script>
