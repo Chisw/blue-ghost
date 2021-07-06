@@ -80,6 +80,7 @@
     "storage",
     "webRequest",
     "webRequestBlocking",
+    "chrome://favicon/",
     "http://*/*",
     "https://*/*"
   ],

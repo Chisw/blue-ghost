@@ -23,15 +23,26 @@
               <i class="el-icon-search" slot="prepend"></i>
             </el-input>
             <div class="mt-4 -mx-4 -mb-4 h-64 overflow-x-hidden overflow-y-auto">
+              <div v-if="displayBookmarks.length === 0" class="p-4 text-gray-600 text-center">
+                没有匹配到书签
+              </div>
               <a
                 target="_blank"
-                class="block px-4 py-1 hover:text-blue-600 hover:bg-gray-100 focus:bg-gray-300 focus:outline-none"
+                class="block px-4 py-1 hover:text-blue-600 hover:bg-gray-100 focus:bg-gray-300 focus:outline-none border-t"
                 v-for="(bookmark, index) in displayBookmarks"
                 :key="index"
                 :href="bookmark.url"
               >
-                <span class="font-semibold">{{index + 1}}. {{bookmark.title}}</span>
-                <p class="text-gray-500">{{bookmark.url}}</p>
+                <div class="flex items-center">
+                  <img
+                    class="block w-4 h-4"
+                    :src="`chrome://favicon/size/16@2x/${bookmark.url}`"
+                  />
+                  <div class="ml-4">
+                    <span class="font-semibold">{{bookmark.title}}</span>
+                    <p class="text-gray-500">{{bookmark.url}}</p>
+                  </div>
+                </div>
               </a>
             </div>
           </div>
