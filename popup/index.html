@@ -5,13 +5,14 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="../static/css/tailwind.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/css/element.min.css" />
+    <link rel="stylesheet" type="text/css" href="./style.css" />
   </head>
   <body>
     <div id="blue-ghost-popup" style="width:480px;">
       <el-tabs type="border-card">
 
         <el-tab-pane>
-          <span slot="label"><i class="el-icon-star-off"></i> Bookmarks</span>
+          <span slot="label"><i class="el-icon-star-off"></i> 书签</span>
           <div>
             <el-input
               autofocus
@@ -19,15 +20,15 @@
               placeholder="请输入站点名称、拼音、拼音首字母"
               v-model="bookmarkValue"
             >
-             <el-button slot="prepend" icon="el-icon-search"></el-button>
+              <i class="el-icon-search" slot="prepend"></i>
             </el-input>
-            <div class="pt-2">
+            <div class="mt-4 -mx-4 -mb-4 h-64 overflow-x-hidden overflow-y-auto">
               <a
-                class="block -mx-4 px-4 py-1 hover:text-blue-600"
+                target="_blank"
+                class="block px-4 py-1 hover:text-blue-600 hover:bg-gray-100 focus:bg-gray-300 focus:outline-none"
                 v-for="(bookmark, index) in displayBookmarks"
                 :key="index"
                 :href="bookmark.url"
-                target="_blank"
               >
                 <span class="font-semibold">{{index + 1}}. {{bookmark.title}}</span>
                 <p class="text-gray-500">{{bookmark.url}}</p>
@@ -37,7 +38,7 @@
         </el-tab-pane>
 
         <el-tab-pane>
-          <span slot="label"><i class="el-icon-monitor"></i> Site</span>
+          <span slot="label"><i class="el-icon-monitor"></i> 站点</span>
           <div class="flex items-center">
             <img class="w-5 h-5" :src="site.favIconUrl || '../img/icon.svg'" />
             <el-input size="small" class="flex-grow ml-2" v-model="site.title" placeholder="Site title" />
@@ -54,7 +55,7 @@
         </el-tab-pane>
 
         <el-tab-pane>
-          <span slot="label"><i class="el-icon-setting"></i> Config</span>
+          <span slot="label"><i class="el-icon-setting"></i> 配置</span>
           <div>
             <el-input size="small" v-model="config.api" placeholder="API url">
               <template slot="prepend">API</template>

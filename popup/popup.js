@@ -48,7 +48,7 @@
           const val = this.bookmarkValue.toLowerCase()
           return this.bookmarks
             .filter(b => b.titleL.includes(val) || b.titlePY.includes(val) || b.titlePYF.includes(val))
-            .filter((b, i) => i < 20)
+            .filter((b, i) => i < 10)
         },
       },
 
@@ -72,12 +72,18 @@
                 }
               })
             })
-          }, 20)
+          }, 1)
 
           document.addEventListener('keyup', e => {
-            if (e.key === 'Enter') {
-              this.pickSite()
-            }
+            // const { key } = e
+            // if (key === 'Enter') {
+            //   // this.pickSite()
+            //   window.open(this.displayBookmarks[this.activeBookmarkIndex].url)
+            // } else if (['ArrowUp', 'ArrowDown'].includes(key)) {
+            //   const calcIndex = this.activeBookmarkIndex + (key === 'ArrowDown' ? 1 : -1)
+            //   const targetIndex = Math.min(9, Math.max(0, calcIndex))
+            //   this.activeBookmarkIndex = targetIndex
+            // }
           })
         },
 
