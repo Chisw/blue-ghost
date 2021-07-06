@@ -7,6 +7,7 @@
     
       data() {
         return {
+          activeTab: 'bookmark',
           bookmarks: [],
           bookmarkValue: '',
           site: {
@@ -47,7 +48,12 @@
         displayBookmarks() {
           const val = this.bookmarkValue.toLowerCase()
           return this.bookmarks
-            .filter(b => b.titleL.includes(val) || b.titlePY.includes(val) || b.titlePYF.includes(val))
+            .filter(b => 
+              b.titleLower.includes(val) ||
+              b.titlePinyin.includes(val) ||
+              b.titlePinyinFirst.includes(val) ||
+              b.url.includes(val)
+            )
             .filter((b, i) => i < 10)
         },
       },
@@ -63,27 +69,28 @@
             chrome.bookmarks.getTree(treeNodes => {
               const flatNodes = this.flatBookmarkTreeNodes(treeNodes)
               this.bookmarks = flatNodes.map(({ title, url }) => {
+                const lowerTitle = title.toLowerCase()
                 return {
                   url,
                   title,
-                  titleL: title.toLowerCase(),
-                  titlePY: getStringPinyin(title),
-                  titlePYF: getStringPinyin(title, true),
+                  titleLower: lowerTitle,
+                  titlePinyin: getStringPinyin(lowerTitle),
+                  titlePinyinFirst: getStringPinyin(lowerTitle, true),
                 }
               })
             })
           }, 1)
 
           document.addEventListener('keyup', e => {
-            // const { key } = e
-            // if (key === 'Enter') {
-            //   // this.pickSite()
-            //   window.open(this.displayBookmarks[this.activeBookmarkIndex].url)
-            // } else if (['ArrowUp', 'ArrowDown'].includes(key)) {
-            //   const calcIndex = this.activeBookmarkIndex + (key === 'ArrowDown' ? 1 : -1)
-            //   const targetIndex = Math.min(9, Math.max(0, calcIndex))
-            //   this.activeBookmarkIndex = targetIndex
-            // }
+            const { key } = e
+            const {
+              activeTab: tab,
+              displayBookmarks,
+            } = this
+
+            if (key === 'Enter' && tab === 'bookmark' && displayBookmarks[0]) {
+              window.open(displayBookmarks[0].url)
+            }
           })
         },
 
