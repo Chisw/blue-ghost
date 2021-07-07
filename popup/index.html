@@ -22,9 +22,9 @@
             >
               <i class="el-icon-search" slot="prepend"></i>
             </el-input>
-            <div class="mt-4 -mx-4 -mb-4 h-64 overflow-x-hidden overflow-y-auto">
+            <div class="mt-4 -mx-4 -mb-4 overflow-x-hidden overflow-y-auto" style="height: 450px;">
               <div v-if="displayBookmarks.length === 0" class="p-4 text-gray-600 text-center">
-                没有匹配到书签
+                {{bookmarkValue ? '没有匹配到书签' : '加载中..'}}
               </div>
               <a
                 target="_blank"
@@ -39,8 +39,9 @@
                     :src="`chrome://favicon/size/16@2x/${bookmark.url}`"
                   />
                   <div class="ml-4 w-full">
-                    <span class="font-semibold">{{bookmark.title}}</span>
+                    <p class="font-semibold w-10/12 truncate">{{bookmark.title}}</p>
                     <p class="text-gray-500 w-10/12 truncate">{{bookmark.url}}</p>
+                    <!-- <p class="text-gray-500">{{bookmark.matchList}}</p> -->
                   </div>
                 </div>
               </a>
@@ -88,7 +89,7 @@
       </el-tabs>
 
       <div class="absolute top-0 right-0 p-2">
-        <el-tooltip effect="dark" content="Reload Blue Ghost" placement="bottom">
+        <el-tooltip effect="dark" content="DEV: Reload Blue Ghost" placement="bottom">
           <el-button
             circle
             size="mini"
@@ -104,6 +105,6 @@
   <script src="../static/js/luxon.min.js"></script>
   <script src="../static/js/vue.min.js"></script>
   <script src="../static/js/element.min.js"></script>
-  <script src="../static/js/pinyin.js"></script>
+  <script src="../content-script/pinyin.js"></script>
   <script src="./popup.js"></script>
 </html>

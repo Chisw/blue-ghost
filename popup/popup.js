@@ -1,6 +1,15 @@
-; (function () {
+; (function (window) {
 
   window.addEventListener('load', () => {
+
+    const {
+      chrome,
+      document,
+      localStorage,
+      getStringPinyin,
+      getDuoyinHandledStrList,
+      luxon,
+    } = window
 
     new Vue({
       el: '#blue-ghost-popup',
@@ -48,12 +57,7 @@
         displayBookmarks() {
           const val = this.bookmarkValue.toLowerCase()
           return this.bookmarks
-            .filter(b => 
-              b.titleLower.includes(val) ||
-              b.titlePinyin.includes(val) ||
-              b.titlePinyinFirst.includes(val) ||
-              b.url.includes(val)
-            )
+            .filter(bookmark => bookmark.matchList.some(str => str.includes(val)))
             .filter((b, i) => i < 10)
         },
       },
@@ -70,12 +74,17 @@
               const flatNodes = this.flatBookmarkTreeNodes(treeNodes)
               this.bookmarks = flatNodes.map(({ title, url }) => {
                 const lowerTitle = title.toLowerCase()
+                const duoyinHandledStrList = getDuoyinHandledStrList(lowerTitle)
+                const matchList = [
+                  url,
+                  lowerTitle,
+                  getStringPinyin(lowerTitle, true),
+                  ...duoyinHandledStrList.map(s => getStringPinyin(s, false)),
+                ]
                 return {
                   url,
                   title,
-                  titleLower: lowerTitle,
-                  titlePinyin: getStringPinyin(lowerTitle),
-                  titlePinyinFirst: getStringPinyin(lowerTitle, true),
+                  matchList,
                 }
               })
             })
@@ -167,4 +176,4 @@
 
   })
 
-}());
+}(window));

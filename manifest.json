@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Blue Ghost",
   "version": "1.0.0",
-  "description": "A chrome assistant",
+  "description": "A tiny chrome assistant",
   "icons": {
     "16": "static/img/icon.png",
     "48": "static/img/icon.png",
