@@ -76,7 +76,7 @@
                 const lowerTitle = title.toLowerCase()
                 const duoyinHandledStrList = getDuoyinHandledStrList(lowerTitle)
                 const matchList = [
-                  url,
+                  url.replace(/(http:\/\/|https:\/\/)/, ''),
                   lowerTitle,
                   getStringPinyin(lowerTitle, true),
                   ...duoyinHandledStrList.map(s => getStringPinyin(s, false)),
