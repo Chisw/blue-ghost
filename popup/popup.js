@@ -1,5 +1,15 @@
 ; (function (window) {
 
+  const CONFIG_KEY = 'BLUE_GHOST_CONFIG'
+  const DEFAULT_CONFIG = `
+    {
+      "api": "",
+      "token": "",
+      "newTab": "",
+      "version": "0.1.0"
+    }
+  `
+
   window.addEventListener('load', () => {
 
     const {
@@ -24,18 +34,12 @@
             title: '',
             url: '',
           },
-          configKey: 'BLUE_GHOST_CONFIG',
-          config: {
-            api: '',
-            token: '',
-            newTab: '',
-          },
+          config: JSON.parse(localStorage.getItem(CONFIG_KEY) || DEFAULT_CONFIG),
         }
       },
 
       created() {
         this.getSiteData()
-        this.getConfigData()
       },
 
       mounted() {
@@ -50,10 +54,6 @@
             || !this.config.token
         },
 
-        updateConfigDisabled() {
-          return JSON.stringify(this.config) === localStorage.getItem(this.configKey)
-        },
-
         displayBookmarks() {
           const val = this.bookmarkValue.toLowerCase()
           return this.bookmarks
@@ -64,11 +64,12 @@
 
       methods: {
 
-        reloadBlueGhost() {
-          chrome.runtime.reload()
+        updateConfig() {
+          localStorage.setItem(CONFIG_KEY, JSON.stringify(this.config))
         },
 
         init() {
+
           setTimeout(() => {
             chrome.bookmarks.getTree(treeNodes => {
               const flatNodes = this.flatBookmarkTreeNodes(treeNodes)
@@ -123,17 +124,6 @@
             const { favIconUrl, title, url } = tabs[0]
             this.site = { favIconUrl, title, url }
           })
-        },
-
-        getConfigData() {
-          const json = localStorage.getItem(this.configKey)
-          if (json) {
-            this.config = JSON.parse(json)
-          }
-        },
-
-        updateConfig() {
-          localStorage.setItem(this.configKey, JSON.stringify(this.config))
         },
 
         async pickSite () {

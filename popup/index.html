@@ -53,14 +53,33 @@
           <span slot="label"><i class="el-icon-monitor"></i> 站点</span>
           <div class="flex items-center">
             <img class="w-5 h-5" :src="site.favIconUrl || '../img/icon.svg'" />
-            <el-input autofocus size="small" class="flex-grow ml-2" v-model="site.title" placeholder="Site title" />
+            <el-input
+              autofocus
+              size="small"
+              class="flex-grow ml-2"
+              v-model="site.title"
+              placeholder="Site title"
+            />
           </div>
           <p class="mt-2 text-xs text-gray-500 truncate">{{site.url}}</p>
           <div class="mt-2 flex items-center">
             <div class="flex-grow mr-4">
-              <el-alert v-if="site.url.length > 512" :closable="false" title="URL is too long" type="error"></el-alert>
+              <el-alert
+                v-if="site.url.length > 512"
+                type="error"
+                title="URL is too long"
+                :closable="false"
+              >
+            </el-alert>
             </div>
-            <el-button round size="mini" type="primary" icon="el-icon-upload" @click="pickSite()" :disabled="pickSiteDisabled">
+            <el-button
+              round
+              size="mini"
+              type="primary"
+              icon="el-icon-upload"
+              @click="pickSite"
+              :disabled="pickSiteDisabled"
+            >
               Pick
             </el-button>
           </div>
@@ -69,32 +88,49 @@
         <el-tab-pane name="config">
           <span slot="label"><i class="el-icon-setting"></i> 配置</span>
           <div>
-            <el-input size="small" v-model="config.api" placeholder="API url">
+            <el-input
+              size="small"
+              v-model="config.api"
+              placeholder="API url"
+              @input="updateConfig"
+            >
               <template slot="prepend">API</template>
             </el-input>
-            <el-input size="small" v-model="config.token" placeholder="Token code" type="password" class="mt-2">
+            <el-input
+              size="small"
+              v-model="config.token"
+              placeholder="Token code"
+              type="password"
+              class="mt-2"
+              @input="updateConfig"
+            >
               <template slot="prepend">Token</template>
             </el-input>
-            <el-input size="small" v-model="config.newTab" placeholder="New tab url" class="mt-2">
+            <el-input
+              size="small"
+              v-model="config.newTab"
+              placeholder="New tab url"
+              class="mt-2"
+              @input="updateConfig"
+            >
               <template slot="prepend">NewTab</template>
             </el-input>
-            <div class="mt-2 flex justify-end">
-              <el-button round size="mini" type="primary" icon="el-icon-refresh" @click="updateConfig()" :disabled="updateConfigDisabled">
-                Update
-              </el-button>
-            </div>
           </div>
         </el-tab-pane>
 
       </el-tabs>
 
       <div class="absolute top-0 right-0 p-2">
-        <el-tooltip effect="dark" content="DEV: Reload Blue Ghost" placement="bottom">
+        <el-tooltip
+          effect="dark"
+          content="DEV: Reload Blue Ghost"
+          placement="bottom"
+        >
           <el-button
             circle
             size="mini"
             icon="el-icon-refresh-left"
-            @click="reloadBlueGhost"
+            @click="chrome.runtime.reload()"
           >
           </el-button>
         </el-tooltip>
