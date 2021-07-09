@@ -15,7 +15,7 @@
   "browser_action": {
     "defalut_icon": "static/img/icon.png",
     "default_title": "Blue Ghost",
-    "default_popup": "popup/index.html"
+    "default_popup": "popup/popup.html"
   },
   "content_scripts": [
     {
@@ -23,6 +23,8 @@
       "js": [
         "static/js/FileSaver.js",
         "static/js/JSZip.js",
+        "static/js/luxon.min.js",
+        "static/js/lodash.min.js",
         "content-script/downloadFiles.js",
         "content-script/moPage.js"
       ],
@@ -33,14 +35,12 @@
       "js": [
         "static/js/vue.min.js",
         "static/js/element.min.js",
-        "static/js/luxon.min.js",
-        "static/js/lodash.min.js",
-        "my12306/dom.js.html",
-        "my12306/index.js"
+        "content-script/my12306/my12306.js.html",
+        "content-script/my12306/my12306.js"
       ],
       "css": [
         "static/css/element.min.css",
-        "my12306/style.css"
+        "content-script/my12306/my12306.css"
       ],
       "run_at": "document_end"
     },
@@ -87,7 +87,7 @@
   "web_accessible_resources": [],
   "homepage_url": "https://jisuowei.com",
   "chrome_url_overrides": {
-    "newtab": "newtab/index.html"
+    "newtab": "newtab/newtab.html"
   },
   "omnibox": {
     "keyword": "blue ghost"
