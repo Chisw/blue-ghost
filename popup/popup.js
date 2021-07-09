@@ -144,11 +144,13 @@
         handleMoPage() {
           let list = [...this.config.moPageList]
           const host = this.siteInfo.host
+
           if (list.includes(host)) {
             list = list.filter(h => h !== host)
           } else {
             list.push(host)
           }
+
           this.config.moPageList = list
           this.updateConfig()
 
@@ -156,6 +158,8 @@
             const { id, url } = tabs[0]
             chrome.tabs.update(id, { url })
           })
+
+          window.close()
         },
 
       },
