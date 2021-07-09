@@ -1,25 +1,23 @@
 ; (function (window) {
 
+  const {
+    chrome,
+    document,
+    localStorage,
+    getStringPinyin,
+    getDuoyinHandledStrList,
+  } = window
+
   const CONFIG_KEY = 'BLUE_GHOST_CONFIG'
-  const DEFAULT_CONFIG = `
-    {
-      "api": "",
-      "token": "",
-      "newTab": "",
-      "version": "0.1.0"
-    }
-  `
+  const DEFAULT_CONFIG = {
+    version: '0.1.0',
+    activeTab: 'bookmark',
+    newTabUrl: '',
+    moPageList: [],
+  }
+  // localStorage.removeItem(CONFIG_KEY)
 
   window.addEventListener('load', () => {
-
-    const {
-      chrome,
-      document,
-      localStorage,
-      getStringPinyin,
-      getDuoyinHandledStrList,
-      luxon,
-    } = window
 
     new Vue({
       el: '#blue-ghost-popup',
@@ -29,17 +27,18 @@
           activeTab: 'bookmark',
           bookmarks: [],
           bookmarkValue: '',
-          site: {
+          siteInfo: {
             favIconUrl: '',
             title: '',
             url: '',
           },
-          config: JSON.parse(localStorage.getItem(CONFIG_KEY) || DEFAULT_CONFIG),
+          config: {},
         }
       },
 
       created() {
-        this.getSiteData()
+        this.checkConfig()
+        this.getSiteInfo()
       },
 
       mounted() {
@@ -47,22 +46,29 @@
       },
 
       computed: {
-        pickSiteDisabled() {
-          return this.site.title.length === 0
-            || this.site.title.length > 512
-            || !this.config.api
-            || !this.config.token
-        },
-
         displayBookmarks() {
           const val = this.bookmarkValue.toLowerCase()
           return this.bookmarks
             .filter(bookmark => bookmark.matchList.some(str => str.includes(val)))
             .filter((b, i) => i < 10)
         },
+
+        isMoPage() {
+          return this.config.moPageList.includes(this.siteInfo.host)
+        },
       },
 
       methods: {
+
+        checkConfig() {
+          const storageConfig = localStorage.getItem(CONFIG_KEY)
+          if (storageConfig) {
+            this.config = JSON.parse(storageConfig)
+          } else {
+            this.config = DEFAULT_CONFIG
+            this.updateConfig()
+          }
+        },
 
         updateConfig() {
           localStorage.setItem(CONFIG_KEY, JSON.stringify(this.config))
@@ -119,45 +125,36 @@
           return flatNodes
         },
 
-        getSiteData() {
+        getUrlHost(url) {
+          return url.split('//')[1].split('/')[0]
+        },
+
+        getSiteInfo() {
           chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
             const { favIconUrl, title, url } = tabs[0]
-            this.site = { favIconUrl, title, url }
+            this.siteInfo = {
+              favIconUrl,
+              title,
+              url,
+              host: this.getUrlHost(url),
+            }
           })
         },
 
-        async pickSite () {
-          const { favIconUrl, title, url } = this.site
-
-          const form = {
-            code: this.config.token,
-            id: Math.random().toString(36).substring(3, 9),
-            date: luxon.DateTime.fromJSDate(new Date()).toFormat('yyyy-MM-dd HH:mm:ss'),
-            avatar: favIconUrl,
-            title,
-            url,
-            lv: '0',
-            type: '3',
-            tag: 'BlueGhost,49',
-          }
-
-          const body = new URLSearchParams()
-          for (const k in form) body.append(k, form[k])
-
-          const res = await fetch(this.config.api, {
-            method: 'POST',
-            headers: new Headers({ 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }),
-            body,
-          })
-
-          const data = await res.json()
-
-          if (data.result) {
-            this.$message.success(`OK: ${this.site.title}`)
-            setTimeout(window.close, 1200)
+        handleMoPage() {
+          let list = [...this.config.moPageList]
+          const host = this.siteInfo.host
+          if (list.includes(host)) {
+            list = list.filter(h => h !== host)
           } else {
-            this.$message.error(JSON.stringify(data) + JSON.stringify(form))
+            list.push(host)
           }
+          this.config.moPageList = list
+          this.updateConfig()
+
+          chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+            chrome.tabs.update(tabs[0].id, { url: tabs[0].url })
+          })
         },
 
       },

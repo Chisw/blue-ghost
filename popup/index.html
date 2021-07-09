@@ -49,38 +49,35 @@
           </div>
         </el-tab-pane>
 
-        <el-tab-pane name="site">
+        <el-tab-pane name="siteInfo">
           <span slot="label"><i class="el-icon-monitor"></i> 站点</span>
           <div class="flex items-center">
-            <img class="w-5 h-5" :src="site.favIconUrl || '../img/icon.svg'" />
+            <img class="w-5 h-5" :src="siteInfo.favIconUrl || '../img/icon.svg'" />
             <el-input
               autofocus
-              size="small"
+              size="mini"
               class="flex-grow ml-2"
-              v-model="site.title"
+              v-model="siteInfo.title"
               placeholder="Site title"
             />
           </div>
-          <p class="mt-2 text-xs text-gray-500 truncate">{{site.url}}</p>
+          <div>
+            <el-input
+              autofocus
+              size="mini"
+              class="mt-2"
+              v-model="siteInfo.url"
+              placeholder="Site url"
+            />
+          </div>
           <div class="mt-2 flex items-center">
-            <div class="flex-grow mr-4">
-              <el-alert
-                v-if="site.url.length > 512"
-                type="error"
-                title="URL is too long"
-                :closable="false"
-              >
-            </el-alert>
-            </div>
             <el-button
               round
               size="mini"
-              type="primary"
-              icon="el-icon-upload"
-              @click="pickSite"
-              :disabled="pickSiteDisabled"
+              :type="isMoPage ? 'danger' : 'primary'"
+              @click="handleMoPage"
             >
-              Pick
+              {{isMoPage ? 'Stop' : 'Use'}} MoPage
             </el-button>
           </div>
         </el-tab-pane>
@@ -90,25 +87,7 @@
           <div>
             <el-input
               size="small"
-              v-model="config.api"
-              placeholder="API url"
-              @input="updateConfig"
-            >
-              <template slot="prepend">API</template>
-            </el-input>
-            <el-input
-              size="small"
-              v-model="config.token"
-              placeholder="Token code"
-              type="password"
-              class="mt-2"
-              @input="updateConfig"
-            >
-              <template slot="prepend">Token</template>
-            </el-input>
-            <el-input
-              size="small"
-              v-model="config.newTab"
+              v-model="config.newTabUrl"
               placeholder="New tab url"
               class="mt-2"
               @input="updateConfig"

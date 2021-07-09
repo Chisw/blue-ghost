@@ -9,7 +9,7 @@
     "128": "static/img/icon.png"
   },
   "background": {
-    "scripts": ["background/index.js"],
+    "scripts": ["background/background.js"],
     "persistent": true
   },
   "browser_action": {
@@ -24,9 +24,9 @@
         "static/js/FileSaver.js",
         "static/js/JSZip.js",
         "content-script/downloadFiles.js",
-        "content-script/index.js"
+        "content-script/moPage.js"
       ],
-      "run_at": "document_start"
+      "run_at": "document_end"
     },
     {
       "matches": ["https://kyfw.12306.cn/*"],
@@ -69,7 +69,7 @@
       "js": [
         "content-script/panoda.js"
       ],
-      "run_at": "document_start"
+      "run_at": "document_end"
     }
   ],
   "permissions": [
