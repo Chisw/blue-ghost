@@ -5,43 +5,61 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="../static/css/tailwind.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/css/element.min.css" />
-    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <link rel="stylesheet" type="text/css" href="./popup.css" />
   </head>
   <body>
     <div id="blue-ghost-popup" style="width:480px;">
       <el-tabs type="border-card" v-model="activeTab">
 
+        <!-- bookmark -->
         <el-tab-pane name="bookmark">
           <span slot="label"><i class="el-icon-star-off"></i> 书签</span>
           <div>
             <el-input
               autofocus
               size="small"
-              placeholder="请输入站点名称、拼音、拼音首字母"
+              placeholder="请输入站点名称、URL、拼音、拼音首字母"
               v-model="bookmarkValue"
             >
               <i class="el-icon-search" slot="prepend"></i>
             </el-input>
             <div class="mt-4 -mx-4 -mb-4 overflow-x-hidden overflow-y-auto" style="height: 450px;">
-              <div v-if="displayBookmarks.length === 0" class="p-4 text-gray-600 text-center">
+              <div v-if="displayBookmarkList.length === 0" class="p-4 text-gray-600 text-center">
                 {{bookmarkValue ? '没有匹配到书签' : '加载中..'}}
               </div>
               <a
                 target="_blank"
-                class="block px-4 py-1 hover:text-blue-600 hover:bg-gray-100 focus:bg-gray-300 focus:outline-none border-t break-all"
-                v-for="(bookmark, index) in displayBookmarks"
-                :key="index"
+                class="block px-4 py-1 hover:text-blue-600 hover:bg-gray-100 focus:bg-gray-300 focus:outline-none border-t break-all hover-appear-parent"
+                v-for="bookmark in displayBookmarkList"
+                :key="bookmark.url"
                 :href="bookmark.url"
               >
                 <div class="flex items-center">
-                  <img
-                    class="block w-4 h-4"
-                    :src="`chrome://favicon/size/16@2x/${bookmark.url}`"
-                  />
-                  <div class="ml-4 w-full">
-                    <p class="font-semibold w-10/12 truncate">{{bookmark.title}}</p>
-                    <p class="text-gray-500 w-10/12 truncate">{{bookmark.url}}</p>
-                    <!-- <p class="text-gray-500">{{bookmark.matchList}}</p> -->
+                  <div class="w-11/12 flex-shrink-0 flex items-center">
+                    <img
+                      class="block w-4 h-4"
+                      :src="`chrome://favicon/size/16@2x/${bookmark.url}`"
+                    />
+                    <div class="w-full">
+                      <p class="px-4 font-semibold truncate">{{bookmark.title}}</p>
+                      <p class="px-4 text-gray-500 truncate">{{bookmark.url}}</p>
+                      <!-- <p class="text-gray-500">{{bookmark.matchList}}</p> -->
+                    </div>
+                  </div>
+                  <div class="w-1/12 flex justify-end hover-appear-child">
+                    <el-tooltip
+                      effect="dark"
+                      content="双击隐藏"
+                      placement="left"
+                    >
+                      <span
+                        class="block w-6 h-6 rounded-full bg-orange-200 text-orange-400 hover-appear-child flex justify-center items-center hover:bg-orange-400 hover:text-white"
+                        @click.prevent="null"
+                        @dblclick.prevent="handleHideBookmark(bookmark)"
+                      >
+                        <i class="el-icon-remove-outline"></i>
+                      </span>
+                    </el-tooltip>
                   </div>
                 </div>
               </a>
@@ -49,6 +67,7 @@
           </div>
         </el-tab-pane>
 
+        <!-- siteInfo -->
         <el-tab-pane name="siteInfo">
           <span slot="label"><i class="el-icon-monitor"></i> 站点</span>
           <div class="flex items-center">
@@ -74,28 +93,76 @@
             <el-button
               round
               size="mini"
-              :type="isMoPage ? 'danger' : 'primary'"
+              :type="isMoPage ? 'danger' : 'success'"
               @click="handleMoPage"
             >
-              {{isMoPage ? 'Stop' : 'Use'}} MoPage
+              {{isMoPage ? '停' : '启'}}用魔页
             </el-button>
           </div>
         </el-tab-pane>
 
+        <!-- config -->
         <el-tab-pane name="config">
           <span slot="label"><i class="el-icon-setting"></i> 配置</span>
-          <div>
-            <el-input
-              size="small"
-              v-model="config.newTabUrl"
-              placeholder="New tab url"
-              class="mt-2"
-              @input="updateConfig"
-            >
+          <el-tabs class="-mt-4">
+            <el-tab-pane>
+              <span slot="label" class="text-xs">恢复书签</span>
+              <div v-if="config.hiddenBookmarkList.length === 0" class="p-4 text-gray-600 text-center">
+                没有已隐藏的书签
+              </div>
+              <div
+                target="_blank"
+                class="block px-4 py-1 hover:bg-gray-100 focus:bg-gray-300 focus:outline-none rounded-lg break-all hover-appear-parent"
+                v-for="bookmark in config.hiddenBookmarkList"
+                :key="bookmark.url"
+              >
+                <div class="flex items-center">
+                  <div class="w-11/12 flex-shrink-0 flex items-center">
+                    <img
+                      class="block w-4 h-4"
+                      :src="`chrome://favicon/size/16@2x/${bookmark.url}`"
+                    />
+                    <div class="w-full">
+                      <p class="px-4 font-semibold truncate">{{bookmark.title}}</p>
+                      <p class="px-4 text-gray-500 truncate">{{bookmark.url}}</p>
+                      <!-- <p class="text-gray-500">{{bookmark.matchList}}</p> -->
+                    </div>
+                  </div>
+                  <div class="w-1/12 flex justify-end hover-appear-child">
+                    <el-tooltip
+                      effect="dark"
+                      content="双击恢复"
+                      placement="left"
+                    >
+                      <span
+                        class="block w-6 h-6 rounded-full bg-green-200 text-green-400 hover-appear-child flex justify-center items-center hover:bg-green-400 hover:text-white cursor-pointer"
+                        @click.prevent="null"
+                        @dblclick.prevent="handleShowBookmark(bookmark)"
+                      >
+                        <i class="el-icon-circle-plus-outline"></i>
+                      </span>
+                    </el-tooltip>
+                  </div>
+                </div>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane>
+              <span slot="label" class="text-xs">NewTab</span>
+              <el-input
+                size="small"
+                v-model="config.newTabUrl"
+                placeholder="New tab url"
+                @input="updateConfig"
+              >
+              </el-input>
               <template slot="prepend">NewTab</template>
-            </el-input>
+            </el-tab-pane>
+          </el-tabs>
+
+          <div class="break-all text-gray-200 bg-gray-900 mt-6 p-1 rounded">
+            DEV CONFIG:
+            <p>{{JSON.stringify(config)}}</p>
           </div>
-          <!-- <div class="break-all">{{JSON.stringify(config)}}</div> -->
         </el-tab-pane>
 
       </el-tabs>

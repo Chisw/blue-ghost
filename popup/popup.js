@@ -12,6 +12,7 @@
   const DEFAULT_CONFIG = {
     version: '0.1.0',
     activeTab: 'bookmark',
+    hiddenBookmarkList: [],
     newTabUrl: '',
     moPageList: [],
   }
@@ -46,10 +47,14 @@
       },
 
       computed: {
-        displayBookmarks() {
+        displayBookmarkList() {
+          const list = this.config.hiddenBookmarkList
           const val = this.bookmarkValue.toLowerCase()
           return this.bookmarks
-            .filter(bookmark => bookmark.matchList.some(str => str.includes(val)))
+            .filter(({ url, matchList }) => {
+              return list.every(item => item.url !== url)
+                && matchList.some(str => str.includes(val))
+            })
             .filter((b, i) => i < 10)
         },
 
@@ -101,11 +106,11 @@
             const { key } = e
             const {
               activeTab: tab,
-              displayBookmarks,
+              displayBookmarkList,
             } = this
 
-            if (key === 'Enter' && tab === 'bookmark' && displayBookmarks[0]) {
-              window.open(displayBookmarks[0].url)
+            if (key === 'Enter' && tab === 'bookmark' && displayBookmarkList[0]) {
+              window.open(displayBookmarkList[0].url)
             }
           })
         },
@@ -123,6 +128,19 @@
           }
           flatChildren(treeNodes)
           return flatNodes
+        },
+
+        handleHideBookmark(bookmark) {
+          const list = [...(this.config.hiddenBookmarkList || []), bookmark]
+          this.config.hiddenBookmarkList = list
+          this.updateConfig()
+          return false
+        },
+
+        handleShowBookmark(bookmark) {
+          const list = [...(this.config.hiddenBookmarkList || [])].filter(bk => bk.url !== bookmark.url)
+          this.config.hiddenBookmarkList = list
+          this.updateConfig()
         },
 
         getUrlHost(url) {

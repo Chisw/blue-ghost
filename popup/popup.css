@@ -14,3 +14,11 @@
 ::-webkit-scrollbar-thumb {
   background: #D1D5DB;
 }
+
+.hover-appear-parent .hover-appear-child {
+  opacity: 0;
+}
+
+.hover-appear-parent:hover .hover-appear-child {
+  opacity: 1;
+}
