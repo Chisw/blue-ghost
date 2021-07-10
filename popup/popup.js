@@ -5,7 +5,7 @@
     document,
     localStorage,
     getStringPinyin,
-    getDuoyinHandledStrList,
+    getDuoyinHandledStrListGroup,
   } = window
 
   const CONFIG_KEY = 'BLUE_GHOST_CONFIG'
@@ -86,12 +86,13 @@
               const flatNodes = this.flatBookmarkTreeNodes(treeNodes)
               this.bookmarks = flatNodes.map(({ title, url }) => {
                 const lowerTitle = title.toLowerCase()
-                const duoyinHandledStrList = getDuoyinHandledStrList(lowerTitle)
+                const [duoyinHandledStrList, duoyinHandledStrListF] = getDuoyinHandledStrListGroup(lowerTitle)
                 const matchList = [
                   url.replace(/(http:\/\/|https:\/\/)/, ''),
                   lowerTitle,
                   getStringPinyin(lowerTitle, true),
                   ...duoyinHandledStrList.map(s => getStringPinyin(s, false)),
+                  ...duoyinHandledStrListF.map(s => getStringPinyin(s, true)),
                 ]
                 return {
                   url,

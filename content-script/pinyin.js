@@ -442,7 +442,7 @@
     return results
   }
 
-  window.getDuoyinHandledStrList = str => {
+  window.getDuoyinHandledStrListGroup = str => {
     const charList = str.split('')
     const duoyinList = []
 
@@ -462,21 +462,31 @@
         charList.splice(charIndex, 1, `<{[${charIndex}]}>`)
       })
 
+      // F: onlyFirst
       const template = charList.join('')
       const duoyinHandledList = []
+      const duoyinHandledListF = []
       const arrangement = getArrangement(duoyinList.map(({ yinList }) => yinList))
 
-      arrangement.forEach(yins => {
-        let res = template
-        yins.forEach((yin, yinIndex) => {
-          res = res.replace(`<{[${duoyinList[yinIndex].charIndex}]}>`, yin)
-        })
-        duoyinHandledList.push(res)
+      arrangement.some((yins, yIndex) => {
+        if (yIndex < 32) {
+          let res = template
+          let resF = template
+          yins.forEach((yin, yinIndex) => {
+            res = res.replace(`<{[${duoyinList[yinIndex].charIndex}]}>`, yin)
+            resF = resF.replace(`<{[${duoyinList[yinIndex].charIndex}]}>`, yin[0])
+          })
+          duoyinHandledList.push(res)
+          duoyinHandledListF.push(resF)
+          return true
+        } else {
+          return false
+        }
       })
 
-      return duoyinHandledList.slice(0, 32)
+      return [duoyinHandledList, duoyinHandledListF]
     } else {
-      return [str]
+      return [[str], []]
     }
   }
 
