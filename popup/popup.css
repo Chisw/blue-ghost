@@ -22,3 +22,15 @@
 .hover-appear-parent:hover .hover-appear-child {
   opacity: 1;
 }
+
+.hover-show-parent .hover-show-child {
+  display: none;
+}
+
+.hover-show-parent:hover .hover-show-child {
+  display: block;
+}
+
+.hover-show-parent:hover .hover-show-child.flex {
+  display: flex;
+}

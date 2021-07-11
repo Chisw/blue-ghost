@@ -47,19 +47,16 @@
                     </div>
                   </div>
                   <div class="w-1/12 flex justify-end hover-appear-child">
-                    <el-tooltip
-                      effect="dark"
-                      content="双击隐藏"
-                      placement="left"
+                    <span
+                      class="block w-6 h-6 rounded-full bg-orange-200 text-orange-400 hover-appear-child flex justify-center items-center hover:bg-orange-400 hover:text-white relative hover-show-parent"
+                      @click.prevent="nothing"
+                      @dblclick.prevent="handleHideBookmark(bookmark)"
                     >
-                      <span
-                        class="block w-6 h-6 rounded-full bg-orange-200 text-orange-400 hover-appear-child flex justify-center items-center hover:bg-orange-400 hover:text-white"
-                        @click.prevent="null"
-                        @dblclick.prevent="handleHideBookmark(bookmark)"
-                      >
-                        <i class="el-icon-remove-outline"></i>
-                      </span>
-                    </el-tooltip>
+                      <i class="el-icon-remove-outline"></i>
+                      <div class="hover-show-child px-2 h-6 bg-orange-200 text-orange-400 shadow rounded absolute top-0 left-0 -ml-20 flex justify-center items-center">
+                        <span>双击隐藏</span>
+                      </div>
+                    </span>
                   </div>
                 </div>
               </a>
@@ -125,23 +122,19 @@
                     <div class="w-full">
                       <p class="px-4 font-semibold truncate">{{bookmark.title}}</p>
                       <p class="px-4 text-gray-500 truncate">{{bookmark.url}}</p>
-                      <!-- <p class="text-gray-500">{{bookmark.matchList}}</p> -->
                     </div>
                   </div>
                   <div class="w-1/12 flex justify-end hover-appear-child">
-                    <el-tooltip
-                      effect="dark"
-                      content="双击恢复"
-                      placement="left"
+                    <span
+                      class="block w-6 h-6 rounded-full bg-green-200 text-green-400 hover-appear-child flex justify-center items-center hover:bg-green-400 hover:text-white cursor-pointer relative hover-show-parent"
+                      @click.prevent="nothing"
+                      @dblclick.prevent="handleShowBookmark(bookmark)"
                     >
-                      <span
-                        class="block w-6 h-6 rounded-full bg-green-200 text-green-400 hover-appear-child flex justify-center items-center hover:bg-green-400 hover:text-white cursor-pointer"
-                        @click.prevent="null"
-                        @dblclick.prevent="handleShowBookmark(bookmark)"
-                      >
-                        <i class="el-icon-circle-plus-outline"></i>
-                      </span>
-                    </el-tooltip>
+                      <i class="el-icon-remove-outline"></i>
+                      <div class="hover-show-child px-2 h-6 bg-green-200 text-green-400 shadow rounded absolute top-0 left-0 -ml-20 flex justify-center items-center">
+                        <span>双击恢复</span>
+                      </div>
+                    </span>
                   </div>
                 </div>
               </div>

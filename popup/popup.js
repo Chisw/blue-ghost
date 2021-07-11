@@ -148,6 +148,10 @@
           return url.split('//')[1].split('/')[0]
         },
 
+        nothing() {
+          return false
+        },
+
         getSiteInfo() {
           chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
             const { favIconUrl, title, url } = tabs[0]

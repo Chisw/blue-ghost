@@ -468,21 +468,19 @@
       const duoyinHandledListF = []
       const arrangement = getArrangement(duoyinList.map(({ yinList }) => yinList))
 
-      arrangement.some((yins, yIndex) => {
-        if (yIndex < 32) {
+      arrangement
+        .slice(0, 32)
+        .forEach(yins => {
           let res = template
           let resF = template
           yins.forEach((yin, yinIndex) => {
-            res = res.replace(`<{[${duoyinList[yinIndex].charIndex}]}>`, yin)
-            resF = resF.replace(`<{[${duoyinList[yinIndex].charIndex}]}>`, yin[0])
+            const pattern = `<{[${duoyinList[yinIndex].charIndex}]}>`
+            res = res.replace(pattern, yin)
+            resF = resF.replace(pattern, yin[0])
           })
           duoyinHandledList.push(res)
           duoyinHandledListF.push(resF)
-          return true
-        } else {
-          return false
-        }
-      })
+        })
 
       return [duoyinHandledList, duoyinHandledListF]
     } else {
