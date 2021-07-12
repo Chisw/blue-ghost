@@ -74,6 +74,7 @@
   ],
   "permissions": [
     "tabs",
+    "history",
     "bookmarks",
     "contextMenus",
     "notifications",

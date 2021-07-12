@@ -185,6 +185,12 @@
           window.close()
         },
 
+        handleClearHistory() {
+          chrome.history.deleteAll(res => {
+            this.$message.success('清除成功')
+          })
+        },
+
       },
 
     })
