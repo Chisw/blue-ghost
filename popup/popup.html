@@ -70,7 +70,6 @@
           <div class="flex items-center">
             <img class="w-5 h-5" :src="siteInfo.favIconUrl || '../img/icon.svg'" />
             <el-input
-              autofocus
               size="mini"
               class="flex-grow ml-2"
               v-model="siteInfo.title"
@@ -79,7 +78,6 @@
           </div>
           <div>
             <el-input
-              autofocus
               size="mini"
               class="mt-2"
               v-model="siteInfo.url"
@@ -110,7 +108,52 @@
         <!-- config -->
         <el-tab-pane name="config">
           <span slot="label"><i class="el-icon-setting"></i> 配置</span>
+          <div
+            v-if="showPasswordMask"
+            class="absolute z-10 inset-0 bg-white p-4"
+          >
+            <span class="text-gray-600">访问密码</span>
+            <el-input
+              size="small"
+              type="password"
+              class="mt-2"
+              ref="visitPassword"
+              v-model="passwordForm.visit"
+              placeholder="请输入访问密码"
+            >
+            </el-input>
+          </div>
           <el-tabs class="-mt-4">
+            <el-tab-pane>
+              <span slot="label" class="text-xs">密码</span>
+              <div>
+                <el-input
+                  size="small"
+                  type="password"
+                  placeholder="请输入密码"
+                  maxlength="6"
+                  v-model="passwordForm.input"
+                >
+                </el-input>
+                <el-input
+                  size="small"
+                  type="password"
+                  class="my-2"
+                  placeholder="请再次输入密码"
+                  maxlength="6"
+                  v-model="passwordForm.input2"
+                >
+                </el-input>
+                <el-button
+                  round
+                  size="mini"
+                  type="primary"
+                  @click="handlePassword"
+                >
+                  {{config.password ? '修改' : '创建'}}密码
+                </el-button>
+              </div>
+            </el-tab-pane>
             <el-tab-pane>
               <span slot="label" class="text-xs">恢复书签</span>
               <div v-if="config.hiddenBookmarkList.length === 0" class="p-4 text-gray-600 text-center">

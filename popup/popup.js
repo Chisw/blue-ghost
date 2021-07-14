@@ -11,10 +11,10 @@
   const CONFIG_KEY = 'BLUE_GHOST_CONFIG'
   const DEFAULT_CONFIG = {
     version: '0.1.0',
-    activeTab: 'bookmark',
     hiddenBookmarkList: [],
     newTabUrl: '',
     moPageList: [],
+    password: '',
   }
   // localStorage.removeItem(CONFIG_KEY)
 
@@ -34,6 +34,11 @@
             url: '',
           },
           config: {},
+          passwordForm: {
+            visit: '',
+            input: '',
+            input2: '',
+          },
         }
       },
 
@@ -44,6 +49,14 @@
 
       mounted() {
         this.init()
+      },
+
+      watch: {
+        activeTab() {
+          if (this.activeTab === 'config' && this.showPasswordMask) {
+            this.$nextTick(() => this.$refs.visitPassword.focus())
+          }
+        },
       },
 
       computed: {
@@ -61,6 +74,12 @@
         isMoPage() {
           return this.config.moPageList.includes(this.siteInfo.host)
         },
+
+        showPasswordMask() {
+          const pwd = this.config.password
+          return pwd && this.passwordForm.visit !== pwd
+        },
+
       },
 
       methods: {
@@ -189,6 +208,34 @@
           chrome.history.deleteAll(res => {
             this.$message.success('清除成功')
           })
+        },
+
+        handlePassword() {
+          const { input, input2 } = this.passwordForm
+
+          let error = ''
+
+          if (!input || !input2) {
+            error = '请输入密码'
+          } else if (input !== input2) {
+            error = '两次密码输入不一致'
+          }
+
+          if (error) {
+            this.$message.error(error)
+            return
+          }
+
+          this.passwordForm = {
+            visit: '',
+            input: '',
+            input2: '',
+          }
+          this.config.password = input
+          this.updateConfig()
+
+          this.$message.success('操作成功')
+
         },
 
       },
