@@ -33,7 +33,7 @@
 
         base64List.forEach((base64, index) => {
           const url = urls[index]
-          const fileName = fileNameHandler(url)
+          const fileName = fileNameHandler(url, index)
           folder.file(fileName, base64, { base64: true })
           log(`[${index + 1}/${base64List.length}] is zipped.`)
         })
