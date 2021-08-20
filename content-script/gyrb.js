@@ -1,4 +1,4 @@
-; (function (win) {
+; (function (window) {
   window.addEventListener('load', () => {
 
     const {
@@ -9,7 +9,7 @@
       location,
       localStorage: store,
       downloadFiles,
-    } = win
+    } = window
 
     if (!downloadFiles) {
       alert('downloadFiles is not defined.')
