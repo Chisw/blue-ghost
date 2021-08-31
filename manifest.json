@@ -45,29 +45,25 @@
       "run_at": "document_end"
     },
     {
-      "matches": [
-        "http://epaper.gytoday.cn/*"
-      ],
-      "js": [
-        "content-script/gyrb.js"
-      ],
+      "matches": ["http://epaper.gytoday.cn/*"],
+      "js": ["content-script/gyrb.js"],
       "run_at": "document_end"
     },
     {
-      "matches": [
-        "https://twitter.com/*"
-      ],
-      "js": [
-        "content-script/tt.js"
-      ],
+      "matches": ["https://twitter.com/*"],
+      "js": ["content-script/tt.js"],
       "run_at": "document_end"
     },
     {
-      "matches": [
-        "https://map.baidu.com/*"
-      ],
+      "matches": ["https://map.baidu.com/*"],
+      "js": ["content-script/panoda.js"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["http://192.168.0.137/*"],
       "js": [
-        "content-script/panoda.js"
+        "content-script/x-plore/x-plore.js.css",
+        "content-script/x-plore/x-plore.js"
       ],
       "run_at": "document_end"
     }
