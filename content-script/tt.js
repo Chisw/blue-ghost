@@ -50,7 +50,7 @@
         index++
         window.scrollTo({ top: index * 1000, behavior: 'smooth' })
         scrolls.unshift(document.documentElement.scrollTop)
-        if (scrolls.slice(0, 3).join('') === String(scrolls[0]).repeat(3)) {
+        if (scrolls.slice(0, 3).join('') === String(scrolls[0]).repeat(3) && !document.querySelector('[role=progressbar]')) {
           clearInterval(fetchTimer)
           downloadFiles(imageLinks, url => {
             return url
@@ -83,7 +83,7 @@
         index++
         window.scrollTo({ top: index * 1000, behavior: 'smooth' })
         scrolls.unshift(document.documentElement.scrollTop)
-        if (scrolls.slice(0, 3).join('') === String(scrolls[0]).repeat(3)) {
+        if (scrolls.slice(0, 3).join('') === String(scrolls[0]).repeat(3) && !document.querySelector('[role=progressbar]')) {
           clearInterval(fetchTimer)
           location.reload()
         }
