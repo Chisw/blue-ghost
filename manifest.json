@@ -58,14 +58,6 @@
       "matches": ["https://map.baidu.com/*"],
       "js": ["content-script/panoda.js"],
       "run_at": "document_end"
-    },
-    {
-      "matches": ["http://*/*"],
-      "js": [
-        "content-script/x-plore/x-plore.js.css",
-        "content-script/x-plore/x-plore.js"
-      ],
-      "run_at": "document_end"
     }
   ],
   "permissions": [
