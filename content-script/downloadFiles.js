@@ -12,7 +12,7 @@
 
   const log = log => console.log(`[DownloadFiles] ${log}`)
 
-  const downloadFiles = (urls, fileNameHandler = encodeURIComponent) => {
+  const downloadFiles = (urls, fileNameHandler = encodeURIComponent, outputName) => {
 
     const downloadPromise = new Promise((resolve, reject) => {
 
@@ -28,7 +28,7 @@
       const saveFile = () => {
         log('Start to zip.')
         const zip = new JSZip()
-        const folderName = `DownloadFiles_${Date.now()}`
+        const folderName = outputName || `DownloadFiles_${Date.now()}`
         const folder = zip.folder(folderName)
 
         base64List.forEach((base64, index) => {
